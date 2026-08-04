@@ -38,51 +38,8 @@
   NOTA: la app ahora RECUERDA tu ultimo checkpoint, workflow, resolucion y
   cantidad. Ya no tienes que volver a elegirlos cada vez que abres.
 
-
 --------------------------------------------------------------------------------
-3. FLUJO DE LA PESTANA SwapPrompt
---------------------------------------------------------------------------------
-  1. Subes una imagen base (la escena/pose que quieres conservar).
-  2. "Extract Tags (WD14)"  -> ComfyUI saca los tags de esa imagen.
-  3. Editas el Source Prompt si hace falta (y opcional: "Save as character").
-  4. Eliges el personaje nuevo en el selector (o "Manage" para crear/editar).
-  5. "Generate Swap (RPG)"  -> arma Positive + Negative:
-        - los tags del personaje van PRIMERO (mandan ellos)
-        - se conserva pose/escena/camara/estilo de la escena base
-        - si un tag de la escena choca con el personaje, se elimina el de la escena
-  6. Copias el positivo/negativo, los mandas a Generate, o guardas un preset.
-
-
---------------------------------------------------------------------------------
-4. DONDE MODIFICAR SwapPrompt  (que carpeta tocar)
---------------------------------------------------------------------------------
-  COMPORTAMIENTO DEL SWAP / ESTILO RPG  (lo que mas vas a tocar):
-      config/prompts/swap_prompt.txt
-      -> Aqui cambias el sabor RPG ([STYLE]), los boosters de calidad
-         ([QUALITY]), que categorias se reemplazan ([STRIP_CATEGORIES]) y el
-         negativo por defecto ([NEGATIVE]). Se relee solo, sin reiniciar.
-
-  WORKFLOW DEL TAGGER WD14:
-      config/tagger/TAGS_API.json
-      -> Si cambias el workflow del tagger en ComfyUI, exporta API y reemplaza
-         este archivo. Modelo/threshold tambien se ajustan en Settings.
-
-  LOGICA DEL REEMPLAZO (backend, codigo):
-      backend/src/services/swap.js
-      -> Reglas de prioridad de tags, deteccion de categorias (hair/eyes/etc),
-         como se mezclan personaje + escena.
-
-  INTERFAZ DE LA PESTANA (frontend, codigo):
-      frontend/src/components/SwapPromptTab.jsx     (la pestaña completa)
-      frontend/src/components/CharacterManager.jsx  (galeria/CRUD de personajes)
-      frontend/src/pages/DesignsPage.jsx            (orden de las pestañas)
-
-  COLORES / TEMA:
-      frontend/src/styles/global.css   (variables :root arriba del archivo)
-
-
---------------------------------------------------------------------------------
-5. CARPETAS UTILES
+3. CARPETAS UTILES
 --------------------------------------------------------------------------------
   config/prompts/        guias editables (swap_prompt.txt, image_to_prompt.txt)
   config/tagger/         TAGS_API.json (workflow WD14)
@@ -95,7 +52,7 @@
 
 
 --------------------------------------------------------------------------------
-6. LLM LOCAL PARA SwapPrompt  (v3.7)
+4. LLM LOCAL PARA SwapPrompt  (v3.7)
 --------------------------------------------------------------------------------
   SwapPrompt ahora usa un LLM local para 2 cosas:
     a) separar los tags del WD14 en SOURCE_PROMPT (escena) y TARGET_PROFILE
@@ -115,18 +72,3 @@
     separate_tags.txt        -> como separa escena vs identidad
     swap_system_prompt.txt   -> como arma el swap (SWAP_SYSTEM_PROMPT)
     swap_prompt.txt          -> reglas de respaldo cuando no hay LLM
-
-
---------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
-7. PANTALLA DE INICIO  (v3.13)
---------------------------------------------------------------------------------
-  Al abrir la app aparece un INICIO oscuro (morado/negro) con PARTICULAS
-  flotando (Canvas 2D, muy ligero, sin 3D ni dependencias extra). Pasa el mouse
-  por el BORDE DERECHO o haz click en los 3 puntitos para abrir el menu:
-       GENERAR   -> generacion
-       MODEL     -> pestañas Poses / Find & Replace
-       SETTINGS  -> ajustes
-  Las particulas se pausan al salir del inicio, al ocultar la pestaña y con
-  "reduce motion". Para volver: boton "Home" arriba a la izquierda.
