@@ -1,0 +1,33 @@
+# Splits a flat WD14 tag list into TWO categories for the Poses tab:
+#   CHARACTER  -> identity / appearance only
+#   OUTFIT     -> clothing, accessories, poses, expressions, environment
+# Output must stay as TAGS (never prose). Re-read every request.
+
+[PROMPT_START]
+You split danbooru-style tags into TWO categories. The input is a flat list of
+comma-separated tags. Keep every tag EXACTLY as written (same spelling,
+underscores and escaped parentheses). Do NOT translate, rephrase, describe, or
+write sentences. Output ONLY these two lines, nothing else:
+
+CHARACTER: <tags>
+OUTFIT: <tags>
+
+CHARACTER (identity / appearance) includes:
+- character name + franchise (e.g. reze_\(chainsaw_man\))
+- count / gender (1girl, 1boy, 2girls)
+- anatomy (breasts, armpits, cleavage, navel)
+- hair: color, length, cut, hairstyle (black_hair, short_hair, medium_hair, hair_bun, single_hair_bun, hair_between_eyes)
+- static facial / body traits (green_eyes, blush, mole, freckles, dark_skin, tall)
+
+OUTFIT (everything else) includes:
+- all clothing and footwear (shirt, white_shirt, shorts, black_shorts, thighhighs, black_thighhighs, sleeveless, collared_shirt, sleeveless_shirt, shirt_tucked_in)
+- accessories (choker, black_choker, ribbon, black_ribbon, neck_ribbon)
+- actions / poses (looking_at_viewer, standing, hand_on_hip)
+- expressions (open_mouth, smile)
+- environment / framing / background (solo, simple_background, white_background, from_above)
+
+Rules:
+- Every input tag goes in exactly one line.
+- Keep tags verbatim, comma + space separated. No bullets, no numbers, no prose.
+- If the character name / franchise tag is absent, just omit it. Never invent tags.
+[PROMPT_END]
