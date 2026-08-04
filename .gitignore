@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build output
+dist/
+*/dist/
+
+# Local data (generated at runtime)
+generated/
+thumbnails/
+database/studio.db
+database/*.db
+
+# Local environment + secrets
+config/.env
+frontend/.env
+.env
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Session-local runtime state
+.claude/scheduled_tasks.lock

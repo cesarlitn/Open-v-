@@ -1,0 +1,19 @@
+{
+  "name": "open-v-backend",
+  "version": "6.19.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0",
+    "sql.js": "^1.10.3",
+    "form-data": "^4.0.0",
+    "ws": "^8.18.0"
+  }
+}

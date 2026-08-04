@@ -1,0 +1,132 @@
+================================================================================
+  OPEN V  -  v6.19.0 (FINAL)  -  GUIA DE INICIO
+================================================================================
+
+--------------------------------------------------------------------------------
+1. QUE NECESITAS INSTALADO (una sola vez)
+--------------------------------------------------------------------------------
+  - Node.js 20.19 o superior        -> https://nodejs.org
+  - ComfyUI corriendo            -> normalmente en http://localhost:8188
+                                    (la app lo detecta solo en 8188/8000/8888/7860)
+  - (OPCIONAL) Ollama            -> solo para la pestaña "Local AI"
+                                    en CMD:  ollama serve
+
+  Para SwapPrompt necesitas en ComfyUI el nodo WD14 Tagger:
+    - Custom node: ComfyUI-WD14-Tagger (pysssss)
+    - Modelo:      wd-v1-4-moat-tagger-v2  (se baja la primera vez que taggeas)
+
+
+--------------------------------------------------------------------------------
+2. COMO ARRANCAR EL PROGRAMA
+--------------------------------------------------------------------------------
+  PASO 1: Abre ComfyUI (que quede corriendo).
+  PASO 2: Abre una ventana de CMD dentro de esta carpeta.
+  PASO 3: La PRIMERA vez (baja dependencias, necesita internet):
+
+            npm run install:all
+
+  PASO 4: Cada vez que quieras usarlo:
+
+            npm run dev
+
+  PASO 5: Abre en el navegador:
+
+            http://localhost:5173
+
+  Para cerrar: Ctrl + C en la ventana de CMD donde corre "npm run dev".
+
+  NOTA: la app ahora RECUERDA tu ultimo checkpoint, workflow, resolucion y
+  cantidad. Ya no tienes que volver a elegirlos cada vez que abres.
+
+
+--------------------------------------------------------------------------------
+3. FLUJO DE LA PESTANA SwapPrompt
+--------------------------------------------------------------------------------
+  1. Subes una imagen base (la escena/pose que quieres conservar).
+  2. "Extract Tags (WD14)"  -> ComfyUI saca los tags de esa imagen.
+  3. Editas el Source Prompt si hace falta (y opcional: "Save as character").
+  4. Eliges el personaje nuevo en el selector (o "Manage" para crear/editar).
+  5. "Generate Swap (RPG)"  -> arma Positive + Negative:
+        - los tags del personaje van PRIMERO (mandan ellos)
+        - se conserva pose/escena/camara/estilo de la escena base
+        - si un tag de la escena choca con el personaje, se elimina el de la escena
+  6. Copias el positivo/negativo, los mandas a Generate, o guardas un preset.
+
+
+--------------------------------------------------------------------------------
+4. DONDE MODIFICAR SwapPrompt  (que carpeta tocar)
+--------------------------------------------------------------------------------
+  COMPORTAMIENTO DEL SWAP / ESTILO RPG  (lo que mas vas a tocar):
+      config/prompts/swap_prompt.txt
+      -> Aqui cambias el sabor RPG ([STYLE]), los boosters de calidad
+         ([QUALITY]), que categorias se reemplazan ([STRIP_CATEGORIES]) y el
+         negativo por defecto ([NEGATIVE]). Se relee solo, sin reiniciar.
+
+  WORKFLOW DEL TAGGER WD14:
+      config/tagger/TAGS_API.json
+      -> Si cambias el workflow del tagger en ComfyUI, exporta API y reemplaza
+         este archivo. Modelo/threshold tambien se ajustan en Settings.
+
+  LOGICA DEL REEMPLAZO (backend, codigo):
+      backend/src/services/swap.js
+      -> Reglas de prioridad de tags, deteccion de categorias (hair/eyes/etc),
+         como se mezclan personaje + escena.
+
+  INTERFAZ DE LA PESTANA (frontend, codigo):
+      frontend/src/components/SwapPromptTab.jsx     (la pestaña completa)
+      frontend/src/components/CharacterManager.jsx  (galeria/CRUD de personajes)
+      frontend/src/pages/DesignsPage.jsx            (orden de las pestañas)
+
+  COLORES / TEMA:
+      frontend/src/styles/global.css   (variables :root arriba del archivo)
+
+
+--------------------------------------------------------------------------------
+5. CARPETAS UTILES
+--------------------------------------------------------------------------------
+  config/prompts/        guias editables (swap_prompt.txt, image_to_prompt.txt)
+  config/tagger/         TAGS_API.json (workflow WD14)
+  config/workflows/      workflows de generacion (.json API)
+  config/loras-previews/ miniaturas de tus LoRAs
+  generated/             imagenes generadas (y previews de personajes)
+  database/studio.db     historial + favoritos + personajes (NO borrar)
+
+================================================================================
+
+
+--------------------------------------------------------------------------------
+6. LLM LOCAL PARA SwapPrompt  (v3.7)
+--------------------------------------------------------------------------------
+  SwapPrompt ahora usa un LLM local para 2 cosas:
+    a) separar los tags del WD14 en SOURCE_PROMPT (escena) y TARGET_PROFILE
+       (identidad del personaje original).
+    b) construir el swap (POSITIVE / NEGATIVE) con el personaje nuevo.
+
+  COMO ELEGIRLO:
+    Abre la app -> boton de Ajustes (engranaje, arriba del panel de config) ->
+    seccion "SwapPrompt LLM". Detecta solo:
+       - Ollama       (http://localhost:11434)
+       - LM Studio    (http://localhost:1234)
+       - llama.cpp    (http://localhost:8080)
+    Elige el modelo y guarda. La opcion se mantiene entre sesiones.
+    Si no eliges ninguno, SwapPrompt funciona igual con el modo por reglas.
+
+  GUIAS EDITABLES DEL LLM (config/prompts/):
+    separate_tags.txt        -> como separa escena vs identidad
+    swap_system_prompt.txt   -> como arma el swap (SWAP_SYSTEM_PROMPT)
+    swap_prompt.txt          -> reglas de respaldo cuando no hay LLM
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+7. PANTALLA DE INICIO  (v3.13)
+--------------------------------------------------------------------------------
+  Al abrir la app aparece un INICIO oscuro (morado/negro) con PARTICULAS
+  flotando (Canvas 2D, muy ligero, sin 3D ni dependencias extra). Pasa el mouse
+  por el BORDE DERECHO o haz click en los 3 puntitos para abrir el menu:
+       GENERAR   -> generacion
+       MODEL     -> pestañas Poses / Find & Replace
+       SETTINGS  -> ajustes
+  Las particulas se pausan al salir del inicio, al ocultar la pestaña y con
+  "reduce motion". Para volver: boton "Home" arriba a la izquierda.
