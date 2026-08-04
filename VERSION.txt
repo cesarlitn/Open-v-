@@ -1,2 +1,0 @@
-Open V
-version 6.19.0 (FINAL)
